@@ -5,13 +5,53 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Bus On Time</title>
   <link rel="stylesheet" href="style.css">
+  <!-- Firebase App (core SDK) -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<script>
+  const firebaseConfig = {
+  apiKey: "AIzaSyCyd5z7FH1MMI2EzosEc3H85Z4IwheVkqE",
+  authDomain: "bus-on-time1.firebaseapp.com",
+  databaseURL: "https://bus-on-time1-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "bus-on-time1",
+  storageBucket: "bus-on-time1.firebasestorage.app",
+  messagingSenderId: "453706146764",
+  appId: "1:453706146764:web:94352472051dc6fb61f369"
+  };
+
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.firestore();
+</script>
+<script>
+  const table = document.getElementById("bus-table-body");
+
+  db.collection("bus-timings").get().then(snapshot => {
+    snapshot.forEach(doc => {
+      const data = doc.data();
+      const row = document.createElement("tr");
+
+      row.innerHTML = `
+        <td>${data.route}</td>
+        <td>${data.departure}</td>
+        <td>${data.arrival}</td>
+      `;
+
+      table.appendChild(row);
+    });
+  });
+</script>
+
 </head>
 <body>
   <h1>Bus Timings</h1>
   <table>
-    <tr><th>Route</th><th>Departure</th><th>Arrival</th></tr>
+    <thead>
+      <tr><th>Route</th><th>Departure</th><th>Arrival</th></tr>
+    </thead>
+    <tbody id="bus-table-body">
     <tr><td>101</td><td>10:00 AM</td><td>10:45 AM</td></tr>
     <tr><td>102</td><td>11:00 AM</td><td>11:30 AM</td></tr>
+    </tbody>
   </table>
 </body>
 </html>
