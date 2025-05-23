@@ -1,57 +1,96 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Bus On Time</title>
-  <link rel="stylesheet" href="style.css">
-  <!-- Firebase App (core SDK) -->
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
-<script>
-  const firebaseConfig = {
-  apiKey: "AIzaSyCyd5z7FH1MMI2EzosEc3H85Z4IwheVkqE",
-  authDomain: "bus-on-time1.firebaseapp.com",
-  databaseURL: "https://bus-on-time1-default-rtdb.asia-southeast1.firebasedatabase.app",
-  projectId: "bus-on-time1",
-  storageBucket: "bus-on-time1.firebasestorage.app",
-  messagingSenderId: "453706146764",
-  appId: "1:453706146764:web:94352472051dc6fb61f369"
-  };
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      background: #f8f8f8;
+    }
 
-  firebase.initializeApp(firebaseConfig);
-  const db = firebase.firestore();
-</script>
-<script>
-  const table = document.getElementById("bus-table-body");
+    h1 {
+      text-align: center;
+    }
 
-  db.collection("bus-timings").get().then(snapshot => {
-    snapshot.forEach(doc => {
-      const data = doc.data();
-      const row = document.createElement("tr");
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+      background: white;
+    }
 
-      row.innerHTML = `
-        <td>${data.route}</td>
-        <td>${data.departure}</td>
-        <td>${data.arrival}</td>
-      `;
+    th, td {
+      padding: 12px;
+      text-align: center;
+      border-bottom: 1px solid #ddd;
+    }
 
-      table.appendChild(row);
-    });
-  });
-</script>
+    th {
+      background: #4CAF50;
+      color: white;
+    }
 
+    tr:hover {
+      background-color: #f1f1f1;
+    }
+  </style>
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore-compat.js"></script>
 </head>
 <body>
-  <h1>Bus Timings</h1>
-  <table>
+
+  <h1>🚌 Bus Timings</h1>
+
+  <table id="busTable">
     <thead>
-      <tr><th>Route</th><th>Departure</th><th>Arrival</th></tr>
+      <tr>
+        <th>Route</th>
+        <th>Departure</th>
+        <th>Arrival</th>
+      </tr>
     </thead>
-    <tbody id="bus-table-body">
-    <tr><td>101</td><td>10:00 AM</td><td>10:45 AM</td></tr>
-    <tr><td>102</td><td>11:00 AM</td><td>11:30 AM</td></tr>
+    <tbody>
+      <!-- Dynamic bus rows go here -->
     </tbody>
   </table>
+
+  <script>
+    // 🔐 Your Firebase config (replace with your actual config)
+    const firebaseConfig = {
+      apiKey: "YOUR_API_KEY",
+      authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+      projectId: "YOUR_PROJECT_ID",
+      storageBucket: "YOUR_PROJECT_ID.appspot.com",
+      messagingSenderId: "YOUR_SENDER_ID",
+      appId: "YOUR_APP_ID"
+    };
+
+    // 🔌 Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    // 📡 Load bus timings from Firestore
+    db.collection("bus-timings").onSnapshot(snapshot => {
+      const tbody = document.querySelector('#busTable tbody');
+      tbody.innerHTML = ''; // Clear table
+
+      snapshot.forEach(doc => {
+        const data = doc.data();
+        const row = `
+          <tr>
+            <td>${data.route}</td>
+            <td>${data.departure}</td>
+            <td>${data.arrival}</td>
+          </tr>
+        `;
+        tbody.innerHTML += row;
+      });
+    });
+  </script>
+
 </body>
 </html>
